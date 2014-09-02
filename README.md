@@ -13,4 +13,4 @@ Sample output:
 
 Outpu commands only in polish language.
 
-Vaersion 1.0
+Version 1.0
