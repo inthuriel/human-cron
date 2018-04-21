@@ -9,11 +9,11 @@
 ################################################
 
 if [[ -z $1 ]]; then
-	echo "Podaj uzytkownika CRON, dla ktorego wyswietlic tabele"
+	echo "Enter cron user."
 	exit 1;
 fi;
 
-echo -e "Lista komend do wykonania dla uzytkownika $1\n"	
+echo -e "List of commands to be carried out for the user $1\n"	
 crontab -l -u $1 | while read line
 	do 
 		if [[ ! $line =~ ^\# && ! -z $line ]]; then
@@ -30,27 +30,27 @@ crontab -l -u $1 | while read line
 			WEEK_DAY=`echo "$line" |cut -d" " -f5`
 			
 			#command string
-			ECHO_str="komenda $COMMAND zostanie wykonana"
+			ECHO_str="the $COMMAND command will be executed"
 			
 			#process values
 				#hours
 				if [[ ! $HOUR =~ ^\*$ && ! -z $HOUR ]]; then
 					if [[ $HOUR =~ ^\*\/[0-9]{1,2}$ && ! -z $HOUR ]]; then
 						NUM_HOUR=`echo "$HOUR" |cut -d"/" -f2`;
-						HR_str="co $NUM_HOUR godzin";
+						HR_str="every $NUM_HOUR hour";
 					elif [[ $HOUR =~ ^[0-9]{1,2}$ && ! -z $HOUR ]]; then
-						HR_str="o godzinie $HOUR"
+						HR_str="at $HOUR"
 						COMBINED_DATE=1
 					elif [[ $HOUR =~ ^[0-9]{1,2}-[0-9]{1,2}$ && ! -z $HOUR ]]; then
 						FR_NUM_HOUR=`echo "$HOUR" |cut -d"-" -f1`;
 						TO_NUM_HOUR=`echo "$HOUR" |cut -d"-" -f2`;
-						HR_str="pomiedzy godzina $FR_NUM_HOUR a $TO_NUM_HOUR"				
+						HR_str="Between $FR_NUM_HOUR and $TO_NUM_HOUR"				
 					elif [[ $HOUR =~ ^[0-9]{1,2}-[0-9]{1,2}\/[0-9]{1,2}$ && ! -z $HOUR ]]; then
 						NUM_HOUR=`echo "$HOUR" |cut -d"/" -f2`;
 						HOUR_RANGE=`echo "$HOUR" |cut -d"/" -f1`;
 						FR_NUM_HOUR=`echo "$HOUR_RANGE" |cut -d"-" -f1`;
 						TO_NUM_HOUR=`echo "$HOUR_RANGE" |cut -d"-" -f2`;
-						HR_str="pomiedzy godzina $FR_NUM_HOUR a $TO_NUM_HOUR, co $NUM_HOUR godziny"
+						HR_str="between $ FR_NUM_HOUR and $ TO_NUM_HOUR, every $ NUM_HOUR hours"
 					fi;
 				else
 					HR_str=""
@@ -60,23 +60,23 @@ crontab -l -u $1 | while read line
 				if [[ ! $MINUTES =~ ^\*$ && ! -z $MINUTES ]]; then
 					if [[ $MINUTES =~ ^\*\/[0-9]{1,2}$ && ! -z $MINUTES ]]; then
 						NUM_MINUTES=`echo "$MINUTES" |cut -d"/" -f2`
-						MIN_str="co $NUM_MINUTES minut"
+						MIN_str="For $NUM_MINUTES minutes"
 					elif [[ $COMBINED_DATE == 1 ]]; then
 						if [[ ! $MINUTES =~ ^\*$ && ! -z $MINUTES ]]; then
 							MIN_str="$MINUTES"
 						else
-							MIN_str="w $MINUTES minucie"
+							MIN_str="In $MINUTES minute"
 						fi;
 					elif [[ $MINUTES =~ ^[0-9]{1,2}-[0-9]{1,2}$ && ! -z $MINUTES ]]; then
 						FR_NUM_MINUTES=`echo "$MINUTES" |cut -d"-" -f1`;
 						TO_NUM_MINUTES=`echo "$MINUTES" |cut -d"-" -f2`;
-						MIN_str="pomiedzy $FR_NUM_MINUTES a $TO_NUM_MINUTES minuta"						
+						MIN_str="between $FR_NUM_MINUTES and $TO_NUM_MINUTES minute"						
 					elif [[ $MINUTES =~ ^[0-9]{1,2}-[0-9]{1,2}\/[0-9]{1,2}$ && ! -z $MINUTES ]]; then
 						NUM_MINUTES=`echo "$MINUTES" |cut -d"/" -f2`;
 						MINUTES_RANGE=`echo "$MINUTES" |cut -d"/" -f1`;
 						FR_NUM_MINUTES=`echo "$MINUTES_RANGE" |cut -d"-" -f1`;
 						TO_NUM_MINUTES=`echo "$MINUTES_RANGE" |cut -d"-" -f2`;
-						MIN_str="pomiedzy $FR_NUM_MINUTES a $TO_NUM_MINUTES minuta, co $NUM_MINUTES minuty"
+						MIN_str="between $FR_NUM_MINUTES and $TO_NUM_MINUTES minute, every $NUM_MINUTES minutes"
 					fi;					
 				else
 					MIN_str=""
